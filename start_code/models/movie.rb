@@ -38,13 +38,13 @@ class Movie
         return stars.map { |star| Star.new(star) }
       end
 
-      # def remaining_budget()
-      #   sql = "SELECT *
-      #   FROM castings
-      #   WHERE movie_id = $1"
-      #   values = [@id]
-      #   money_spent = SqlRunner.run(sql, values)
-      #   money_spent.map { |casting| Casting.new(casting) }
-      #   return  money_spent.reduce(0, :+).to_i
-      # end
+      def remaining_budget()
+        sql = "SELECT castings.*
+        FROM castings
+        WHERE movie_id = $1"
+        values = [@id]
+        casts = SqlRunner.run(sql, values)
+        sum = casts.reduce(0) { |sum, cast| sum += Casting.new(cast).fee.to_i }
+        return  @budget - sum
+      end
     end
